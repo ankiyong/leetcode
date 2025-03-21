@@ -1,14 +1,26 @@
 class Solution:
     def numKLenSubstrNoRepeats(self, s: str, k: int) -> int:
-        
-        max_index = len(s)
-        if k == max_index:
+        if k > 26:
             return 0
-        min_index = 0
-        s_list = [char for char in s]
-        cnt = 0
-        while min_index + k <= max_index:
-            if len(s_list[min_index:min_index+k]) == len(set(s_list[min_index:min_index+k])):
-                cnt += 1
-            min_index += 1
-        return cnt
+        
+        n = len(s)
+        left = right = 0
+        def get_val(ch: str) -> int:
+            return ord(ch) - ord('a')
+        ans = 0
+        freq = [0] * 26
+        while right < n:
+            freq[get_val(s[right])] += 1
+
+            while freq[get_val(s[right])] > 1:
+                freq[get_val(s[left])] -= 1
+                left += 1
+
+            if right - left + 1 == k:
+                freq[get_val(s[left])] -= 1
+                ans += 1
+                left += 1
+
+            
+            right += 1
+        return ans
